@@ -8,7 +8,7 @@ Welcome to the **Supermarket Billing System**, a **C++ console-based application
 ## 🎯 Features  
 
 ### 🏢 **Administrator Panel**  
-- 🔹 **🔐 Secure Login** (Username: `ompatel`, Password: `1`)  
+- 🔹 **🔐 Secure Login** (Username: `techtitans@gmail.com`, Password: `4`)  
 - 🔹 **➕ Add Products** (Code, Name, Price, Discount)  
 - 🔹 **✏️ Modify Products** (Edit product details)  
 - 🔹 **❌ Delete Products** (Remove from inventory)  
