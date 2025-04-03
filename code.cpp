@@ -54,7 +54,7 @@ m:
         cin >> email;
         cout << "Enter Password: ";
         cin >> password;
-        if (email == "techtitan@gmail.com" && password == "4")
+        if (email == "techtitans@gmail.com" && password == "4")
         {
             administrator();
         }
