@@ -1,47 +1,46 @@
-# 🛒 Supermarket Billing System - C++ Project 🎯  
-
-## 🚀 Introduction  
-Welcome to the **Supermarket Billing System**, a **C++ console-based application** designed to manage product inventory and process customer purchases efficiently. This system allows **administrators** to add, modify, and remove products, while **buyers** can purchase items and receive a detailed bill. 💰  
+# 🚀 SPACE SHOOTER 2D - TERMINAL EDITION  
+> An immersive ASCII space battle written entirely in C++ using Windows Console API
 
 ---
 
-## 🎯 Features  
+## *🎮 Game Overview*
 
-### 🏢 **Administrator Panel**  
-- 🔹 **🔐 Secure Login** (Username: `techtitans@gmail.com`, Password: `4`)  
-- 🔹 **➕ Add Products** (Code, Name, Price, Discount)  
-- 🔹 **✏️ Modify Products** (Edit product details)  
-- 🔹 **❌ Delete Products** (Remove from inventory)  
-- 🔹 **📜 View Product List** (Check available items)  
+Welcome to *Space Shooter, a retro-style, fast-paced arcade game that runs directly in your **Windows terminal*. Built purely in C++ with no external graphics libraries, this game recreates the nostalgic vibe of classic shooting games — in ASCII art!
 
-### 🛍️ **Buyer Panel**  
-- 🛒 **📜 View Products** (See the available products)  
-- 🛒 **💰 Purchase Items** (Select product & quantity)  
-- 🛒 **🧾 Generate Bill** (Total price with applied discounts)  
+You are the lone defender of the galaxy. Your mission is simple:  
+*Dodge enemies, shoot them down, and survive as long as you can.*
 
 ---
 
-## 🗃️ Data Structures Used  
+## *🧰 Technologies Used*
 
-📌 **Arrays (`arrc[]`, `arrq[]`)** → Stores product codes and quantities while processing a purchase.  
-📌 **File Handling (`fstream`)** → Acts as a **persistent data structure** for storing product details.  
-📌 **Class (`shopping`)** → Implements **encapsulation** by grouping all related functions & variables.  
-📌 **Loops & Conditionals (`while`, `for`, `if-else`)** → Used for menu navigation and searching in files.  
-📌 **String (`string pname`)** → Stores product names.  
-
-🔹 **Why File Handling Instead of Other DS?**  
-Instead of using **arrays or linked lists** for storage, **files** ensure **data persistence**, so product information remains even after restarting the program.  
+- *C++*  
+- *Windows Console API* (windows.h)  
+- *Keyboard Input* (conio.h)  
+- *Real-time animation* using Sleep() and cursor manipulation  
+- *Dynamic data structures* via std::vector  
 
 ---
 
-## 📂 File Handling  
-📌 Stores product details in **`database.txt`**  
-📌 Uses **`database1.txt`** for temporary storage while editing/deleting records  
-📌 Ensures **data is saved even after program termination**  
+## *🕹 Controls*
+
+| Key       | Action            |
+|-----------|-------------------|
+| A       | Move Left         |
+| D       | Move Right        |
+| Space   | Shoot Bullet      |
+| Esc     | Quit Game         |
 
 ---
 
-## 🔑 How to Run  
-💻 **Compile the program:**  
+## *📦 Setup Instructions*
+
+### *1. Requirements*
+- OS: Windows (uses <windows.h>)
+- C++ Compiler (e.g., *g++* or *MSVC*)
+
+### *2. Clone & Compile*
 ```bash
-g++ supermarket.cpp -o supermarket
+git clone https://github.com/your-username/space-shooter-cpp.git
+cd space-shooter-cpp
+g++ space_shooter.cpp -o space_shooter
