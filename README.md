@@ -12,6 +12,7 @@ You are the lone defender of the galaxy. Your mission is simple:
 
 ---
 
+
 ## *🧰 Technologies Used*
 
 - *C++*  
@@ -22,25 +23,15 @@ You are the lone defender of the galaxy. Your mission is simple:
 
 ---
 
-## *🕹 Controls*
+## *🗂 Data Structures Used*
 
-| Key       | Action            |
-|-----------|-------------------|
-| A       | Move Left         |
-| D       | Move Right        |
-| Space   | Shoot Bullet      |
-| Esc     | Quit Game         |
-
----
-
-## *📦 Setup Instructions*
-
-### *1. Requirements*
-- OS: Windows (uses <windows.h>)
-- C++ Compiler (e.g., *g++* or *MSVC*)
-
-### *2. Clone & Compile*
-```bash
-git clone https://github.com/your-username/space-shooter-cpp.git
-cd space-shooter-cpp
-g++ space_shooter.cpp -o space_shooter
+### std::vector
+- *Bullets* and *Enemies* are stored using std::vector:
+    - Allows *dynamic resizing*
+    - Efficient *insertions* and *deletions*
+    - Simplifies memory management
+- Structure of objects stored:
+```cpp
+struct Coordinate {
+    int x, y;
+};
