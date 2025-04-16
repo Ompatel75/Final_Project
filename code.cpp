@@ -6,100 +6,113 @@
 using namespace std;
 
 void gotoxy(int x, int y) {
-    COORD coord;
-    coord.X = x;
-    coord.Y = y;
+    COORD coord = { (SHORT)x, (SHORT)y };
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 }
 
-class SpaceShooter{
-	private:
+void hideCursor() {
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_CURSOR_INFO cursorInfo = { 1, FALSE };
+    SetConsoleCursorInfo(hConsole, &cursorInfo);
+}
+
+class SpaceShooter {
+private:
     int width, height;
     int x, y;
     int score;
     bool gameover;
-    
+
     struct Coordinate {
         int x, y;
     };
-    
-     vector<Coordinate> bullets;
+
+    vector<Coordinate> bullets;
     vector<Coordinate> enemies;
-   public:
-   
-   SpaceShooter(int width, int height): width(width), height(height), 
-	x(width / 2), y(height - 2), score(0), gameover(false) {}
-    
+
+public:
+    SpaceShooter(int width, int height)
+        : width(width), height(height), x(width / 2), y(height -1), score(0), gameover(false) {}
+
     void drawPlayer() {
-        
-    gotoxy(x, y); 
-	cout <<"^";
-      
+        gotoxy(x - 1, y - 2); cout << "/^\\ ";
+        gotoxy(x - 2, y - 1); cout << "|___|";
     }
-    
-     void erasePlayer() {
-         gotoxy(x,y);
-		cout << " ";
+
+    void erasePlayer() {
+        gotoxy(x - 1, y - 2); cout << "      ";
+        gotoxy(x - 2, y - 1); cout << "      ";
     }
-    
-    
-     void moveLeft() {
-        if (x > 1)
-        x--;
+
+    void moveLeft() {
+        if (x > 4) x--;
     }
-    
-      void moveRight() {
-        if (x < width - 2)
-        x++;
+
+    void moveRight() {
+        if (x < width - 5) x++;
     }
-    
-     void shoot() {
-        bullets.push_back({ x, y - 1 });
+
+    void shoot() {
+        bullets.push_back({ x, y - 3 });
+        Beep(600, 50);
     }
-    
+
     void drawBullets() {
-        for (int i = 0; i < bullets.size(); i++) {
-            gotoxy(bullets[i].x, bullets[i].y);
-            cout << ".";
+        for (auto& b : bullets) {
+            gotoxy(b.x, b.y); cout << "|";
         }
     }
-    
+
     void moveBullets() {
+        // Vector to store bullets to be removed
+        vector<int> bulletsToErase;
+
         for (int i = 0; i < bullets.size(); i++) {
             bullets[i].y--;
 
             // Check for collision with enemies
-         for (int j = 0; j < enemies.size(); j++) {
-if (bullets[i].x == enemies[j].x && bullets[i].y == enemies[j].y) {
-                    bullets.erase(bullets.begin() + i);
+            for (int j = 0; j < enemies.size(); j++) {
+                // Check if bullet is within the range of the enemy ship
+                if (bullets[i].x >= enemies[j].x - 2 && bullets[i].x <= enemies[j].x + 2 &&
+                    bullets[i].y == enemies[j].y) {
+                    // If a bullet hits an enemy, add both to be removed
+                    bulletsToErase.push_back(i);
                     enemies.erase(enemies.begin() + j);
-                    score += 10;
-                    
+
+                    score += 10;  // Increase score
+                    Beep(800, 100);  // Sound effect
+                    break;  // Exit inner loop to avoid invalid access
                 }
             }
-                     if (bullets[i].y <= 1) {
-                bullets.erase(bullets.begin() + i);
-                i--;
+
+            // Remove the bullet if it goes off-screen
+            if (bullets[i].y <= 0) {
+                bulletsToErase.push_back(i);
             }
-        }//first for loop
-    }//function
-    
-     void drawEnemies() {
-        for (int i = 0; i < enemies.size(); i++) {
-            gotoxy(enemies[i].x, enemies[i].y);
-            cout << "V";
-           
+        }
+
+        // Erase bullets from the list
+        // Remove bullets after checking all bullets for collisions
+        for (int i = bulletsToErase.size() - 1; i >= 0; i--) {
+            bullets.erase(bullets.begin() + bulletsToErase[i]);
         }
     }
-    
-        void moveEnemies() {
+
+    void drawEnemies() {
+        for (auto& e : enemies) {
+            gotoxy(e.x -2, e.y); cout << "-----"; // Simple line for enemy ship
+        }
+    }
+
+    void moveEnemies() {
         for (int i = 0; i < enemies.size(); i++) {
             enemies[i].y++;
 
-            // Check for collision with player
-            if (enemies[i].x == x && enemies[i].y == y) {
+            // Check for collision with the player's spaceship
+            if ((enemies[i].y == y - 2 || enemies[i].y == y - 1 || enemies[i].y == y) &&
+                (enemies[i].x >= x - 3 && enemies[i].x <= x + 3)) {
                 gameover = true;
-                break;
+                return;
             }
 
             if (enemies[i].y >= height - 1) {
@@ -110,73 +123,62 @@ if (bullets[i].x == enemies[j].x && bullets[i].y == enemies[j].y) {
     }
 
     void generateEnemies() {
-        if (rand() % 100 < 5) { // 5% chance of generating an enemy in each frame
-            int enemyX = rand() % (width - 2) + 1;
+        if (rand() % 100 < 8) {
+            int enemyX = rand() % (width - 5) + 3;
             enemies.push_back({ enemyX, 1 });
         }
     }
-   
-    bool isGameOver() const {
-        return gameover;
+    
+    void displayScore() {
+        gotoxy(2, height - 1);
+        cout << " Score: " << score << " ";
     }
     
-     int getScore() const {
-        return score;
-    }
-
+    bool isGameOver() const { return gameover; }
+    int getScore() const { return score; }
 };
+    
+int main() {
+    system("mode con: lines=40 cols=60");
+    hideCursor();
+    srand((unsigned)time(0));
 
-int main(){
-	  system("mode con: lines=40 cols=40");
-	  
-	  //hide cursor
-	  HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    CONSOLE_CURSOR_INFO cursorInfo;
-    cursorInfo.bVisible = FALSE;
-    cursorInfo.dwSize = 1;
-    SetConsoleCursorInfo(hConsole, &cursorInfo); 
+    int width = 60, height = 40;
+    SpaceShooter game(width, height);
+
+    cout << "Instructions:\n";
+    cout << "Use A/D or Left/Right Arrow keys to move.\n";
+    cout << "Space to fire, Esc to quit.\n\n";
     
-    srand(time(0));
-     int width = 40, height = 40;
-       SpaceShooter game(width, height);
-       
-    cout<<"Instructions"<<endl;
-    cout<<"************"<<endl;
-    cout<<"1.Use right and left arrow keys for move"<<endl;
-    cout<<"2.Enter space bar for fire"<<endl;
-    cout<<"3.Enter Esc for exit quit game"<<endl<<endl;
-    
-	system("pause");  
-	
-	 while (!game.isGameOver()) {
-        if (_kbhit()) {
-            char ch = _getch();
-            if (ch == 'a')
-                game.moveLeft();
-            else if (ch == 'd')
-                game.moveRight();
-            else if (ch == ' ')
-                game.shoot();
-            else if (ch == 27)
-                break;
-        }
-        game.generateEnemies();
+    system("pause");
+
+    while (!game.isGameOver()) {
+        game.erasePlayer();
         game.drawPlayer();
         game.drawBullets();
         game.drawEnemies();
+        game.displayScore();
 
+        if (_kbhit()) {
+            char ch = _getch();
+            if (ch == 'a' || ch == 75) game.moveLeft();      // left
+            else if (ch == 'd' || ch == 77) game.moveRight(); // right
+            else if (ch == ' ') game.shoot();
+            else if (ch == 27) break; // ESC
+        }
+
+        game.generateEnemies();
         game.moveBullets();
         game.moveEnemies();
 
-        Sleep(130); 
+        Sleep(80);
+        system("cls");
+    }
 
-        system("cls");   
-  }
-  
-  gotoxy(width / 2 - 5, height / 2);
-    cout << "Game Over!";
-    
-     gotoxy(width / 2 - 7, height / 2 + 1);
-    cout << "Your Score: " << game.getScore() << endl;
-    return 0;   
+    gotoxy(width / 2 - 5, height / 2);
+    cout << "GAME OVER!";
+    gotoxy(width / 2 - 7, height / 2 + 1);
+    cout << "Your Score: " << game.getScore();
+    gotoxy(0, height); // move cursor below
+    return 0;
 }
